@@ -2,8 +2,8 @@
 Today I Learned
 
 ## 2026-03-15
-GitHubでTILサイトをセットアップ。 
-昔、githubでサイト作るの流行ったよね、と作業しながらオジサンとだべれるClaude君好き
+- GitHubでTILサイトをセットアップ。 
+- 昔、githubでサイト作るの流行ったよね、と作業しながらオジサンとだべれるClaude君好き
 
 ### やったこと
 - GitHubでリポジトリを作成（README.mdにチェック）
@@ -12,20 +12,19 @@ GitHubでTILサイトをセットアップ。
 
 ### コマンド一覧
 
-# 初回設定（1回だけ）
-git config --global user.name "Your Name"
-git config --global user.email "your@email.com"
+#### 初回設定（1回だけ）
+- git config --global user.name "Your Name"
+- git config --global user.email "your@email.com"
 
-# リポジトリをcloneする（新しい環境で1回）
-git clone https://github.com/ユーザー名/til.git
-cd til
+#### リポジトリをcloneする（新しい環境で1回）
+- git clone https://github.com/ユーザー名/til.git
 
-# 毎日の作業
-git pull origin main        # 作業前に必ずやる
-# README.md を編集して追記
-git add README.md
-git commit -m "TIL: 内容を短く英語で"
-git push origin main
+#### 毎日の作業
+- git pull origin main        # 作業前に必ずやる
+#### README.md を編集して追記
+- git add README.md
+- git commit -m "TIL: 内容を短く英語で"
+- git push origin main
 
 ## 2026-03-15
 - VS2022 の内部バージョンは "18"（フォルダ名が 2022 ではない）
