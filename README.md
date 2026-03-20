@@ -1,6 +1,29 @@
 # til
 Today I Learned
 
+
+## Windows Claude DesktopのAppDataパス
+- ストア版はパスが通常と異なる：
+- %APPDATA%\Claude\  ← 通常版
+- C:\Users\xxx\AppData\Local\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Roaming\Claude\  ← ストア版
+
+## Claude Desktopの完全終了
+- ×ボタンではバックグラウンドで動き続ける。タスクトレイアイコンを右クリック→「Quit」が必要。MCPサーバーはClaude Desktop再起動で自動的に再起動される。
+- claude_desktop_config.jsonの配置場所
+- 既存の preferences キーを残しつつ mcpServers を追記する必要がある。上書きすると設定が消える。
+
+## Claude Desktopの設定ファイル
+- %APPDATA%\Claude\claude_desktop_config.json
+
+## uvのインストール　
+- powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+## 1. pipでインストールされているか確認
+- pip show uv
+
+## 2. uvのパスを探す
+- where.exe uv
+
 ## 2026-03-15
 - GitHubでTILサイトをセットアップ。 
 - 昔、githubでサイト作るの流行ったよね、と作業しながらオジサンとだべれるClaude君好き
