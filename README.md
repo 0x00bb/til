@@ -1,6 +1,14 @@
 # til
 Today I Learned
 
+### 技術メモ
+
+- WIAプロパティは機種によってIDが異なる場合がある→実機確認必須
+- MCPレスポンスの上限は1MB（2026年3月時点）
+- base64は元データの約1.33倍のサイズになる
+
+
+- Open API / Swagger
 
 ## Windows Claude DesktopのAppDataパス
 - ストア版はパスが通常と異なる：
