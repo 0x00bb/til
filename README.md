@@ -3,6 +3,26 @@ Today I Learned
 
 ---
 
+## 2026-04-05 faster-whisper
+
+`faster-whisper` は初回起動時に内部で `huggingface_hub` を使い、Whisperのモデルファイルをダウンロードする。
+ダウンロード済みのモデルは `C:\Users\<user>\.cache\huggingface\hub\` にキャッシュされ、2回目以降は完全オフラインで動作する。
+
+会社PCのAppLockerなどで `hf_xet.dll`（高速DL用ライブラリ）がブロックされる場合は、初回のみ以下の環境変数を設定して起動する：
+
+```bat
+set HF_HUB_DISABLE_XET=1
+python your_script.py
+```
+
+これにより通常のHTTPダウンロードにフォールバックする。モデルがキャッシュされれば以降はこの設定不要。
+
+**Whisperモデルのサイズ目安：**
+- `tiny` — 約75MB、高速、精度低め
+- `base` — 約145MB、バランス型
+- `small` — 約460MB、精度高め、CPUでは重い
+
+
 ## 2026-03-22 — プロダクト開発の環境・戦略について整理した
 
 ### 開発環境の全体像
