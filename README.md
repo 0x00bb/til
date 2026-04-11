@@ -1,6 +1,113 @@
 # til
 Today I Learned
 
+# TIL: Windows Live Captions 
+
+
+| ツール | 用途 | 備考 |
+|---|---|---|
+| System Informer | プロセス・モジュール解析 | 旧Process Hacker。今も現役 |
+| Process Monitor | ファイルアクセス追跡 | Sysinternals。以前と変わらず使える |
+| Ghidra | バイナリ解析・逆コンパイル | NSA製・無償。Java 21以上が必要 |
+
+---
+
+
+### exeやDLLのタイプ確認方法
+- System Informer → General タブ → Integrity level
+- PS> `[System.Reflection.AssemblyName]::GetAssemblyName("確認したい.dll")` → 例外 = ネイティブ確定
+- dll のExportに `DllGetActivationFactory` がある → **WinRTコンポーネント**　
+
+---
+
+## DLL構成・役割分担
+
+```
+LiveCaptions.exe（184kB・薄いランチャー）
+    │
+    ├── LiveCaptions.dll（632kB）
+    │   ├── WinRTコンポーネント（DllGetActivationFactory）
+    │   ├── UI・状態管理層
+    │   └── ETWイベント発行
+    │
+    ├── LiveCaptionsBackendDll.dll（512kB）
+    │   └── Cognitive Services C API を直接呼び出し
+    │
+    ├── LiveCaptionsDesktop.dll（176kB）
+    │   └── デスクトップ連携・DWM
+    │
+    └── LiveCaptionsXamlApplication.dll（84kB）
+        └── XAML UI層（WinUI3）
+```
+
+## 音声認識エンジン
+
+```
+Microsoft Cognitive Services
+  Embedded Speech SDK（C++版）
+    └── ONNX Runtime（7.96MB）
+            └── RNN-T モデル
+                （Recurrent Neural Network Transducer）
+```
+
+
+### モデルパイプライン
+
+| ファイル | 役割 |
+|---|---|
+| `encoder.onnx` | 音声 → 特徴量 |
+| `decoder.onnx` | 特徴量 → テキスト候補 |
+| `joint.onnx` | 最終判定（RNN-Tの核心） |
+| `svad_init.quantized.onnx` | 音声区間検出（VAD） |
+| `lid_quantized.onnx` | 言語自動識別 |
+| `punct/cappunc.onnx` | 句読点・大文字化 |
+| `itn/itntag.quant.onnx` | 逆テキスト正規化（数字変換等） |
+
+---
+
+## モデルの管理場所
+
+```
+C:\Program Files\WindowsApps\
+  MicrosoftWindows.Speech.en-US.1_1.0.24.0_x64__cw5n1h2txyewy\
+  MicrosoftWindows.Speech.ja-JP.1_1.0.20.0_x64__cw5n1h2txyewy\
+```
+- 言語別パッケージとして **Windows Update で管理**
+- 備考：`WindowsApps` は **TrustedInstaller 保護**下（管理者でもアクセス不可）
+
+---
+
+## 音声処理パイプライン LiveCaptionsBackendDll.dll
+
+```
+① マイク入力
+   MMDevAPI.dll → IMMDevice（デバイス列挙）
+   AudioSes.dll → Audio Session 管理
+   avrt.dll     → リアルタイム優先スレッド
+
+② 音声データ投入（プッシュ型）
+   push_audio_input_stream_write
+   → マイクデータを能動的に流し込む方式
+
+③ 認識設定
+   embedded_speech_config_add_path            → モデルパス指定
+   embedded_speech_config_set_speech_recognition_model
+   auto_detect_source_lang_config_*           → 言語自動判別
+
+④ 認識開始
+   recognizer_start_continuous_recognition_async
+
+⑤ 結果取得（コールバック）
+   recognizer_speech_start_detected_set_callback
+   recognizer_speech_end_detected_set_callback
+   result_get_text     → テキスト取得
+   result_get_offset   → タイミング情報
+   result_get_duration
+
+⑥ フィルタ
+   speech_config_set_profanity → 不適切語フィルタ
+```
+
 ---
 
 ## 2026-04-05 faster-whisper
